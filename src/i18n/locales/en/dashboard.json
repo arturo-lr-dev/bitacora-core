@@ -1,5 +1,14 @@
 {
   "title": "Dashboard",
   "welcome": "Welcome",
-  "logout": "Logout"
+  "logout": "Logout",
+  "adminPanel": "Admin Panel",
+  "totalUsers": "Total Users",
+  "registered": "Registered",
+  "projects": "Projects",
+  "active": "Active",
+  "totalHours": "Total Hours",
+  "thisMonth": "This month",
+  "clients": "Clients",
+  "manageProjects": "Manage Projects"
 }

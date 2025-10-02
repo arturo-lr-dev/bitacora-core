@@ -1,5 +1,14 @@
 {
   "title": "Panel de Control",
   "welcome": "Bienvenido",
-  "logout": "Cerrar sesión"
+  "logout": "Cerrar sesión",
+  "adminPanel": "Panel de Administración",
+  "totalUsers": "Total Usuarios",
+  "registered": "Registrados",
+  "projects": "Proyectos",
+  "active": "Activos",
+  "totalHours": "Horas Totales",
+  "thisMonth": "Este mes",
+  "clients": "Clientes",
+  "manageProjects": "Gestionar Proyectos"
 }
