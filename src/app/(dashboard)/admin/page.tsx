@@ -1,8 +1,10 @@
 import { requireAuth } from '@/lib/auth/session';
 import { getUserWithRole } from '@/lib/user/getOrCreateUser';
 import { redirect } from 'next/navigation';
+import Link from 'next/link';
 import { DashboardHeader } from '@/components/features/dashboard/DashboardHeader';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Button } from '@/components/ui/Button';
 
 export default async function AdminDashboard() {
   const session = await requireAuth();
@@ -34,15 +36,17 @@ export default async function AdminDashboard() {
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Proyectos</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-3xl font-bold">0</p>
-              <p className="text-sm text-muted-foreground">Activos</p>
-            </CardContent>
-          </Card>
+          <Link href="/admin/projects">
+            <Card className="hover:shadow-md transition-shadow cursor-pointer">
+              <CardHeader>
+                <CardTitle>Proyectos</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-3xl font-bold">0</p>
+                <p className="text-sm text-muted-foreground">Activos</p>
+              </CardContent>
+            </Card>
+          </Link>
 
           <Card>
             <CardHeader>
@@ -63,6 +67,14 @@ export default async function AdminDashboard() {
               <p className="text-sm text-muted-foreground">Registrados</p>
             </CardContent>
           </Card>
+        </div>
+
+        <div className="mt-6">
+          <Link href="/admin/projects">
+            <Button className="w-full md:w-auto">
+              📋 Gestionar Proyectos
+            </Button>
+          </Link>
         </div>
       </main>
     </div>
