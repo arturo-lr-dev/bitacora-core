@@ -55,12 +55,42 @@ npx prisma migrate dev --name init
 
 ### 4. Habilitar Authentication en Supabase
 
+#### Email Authentication
 1. Ve a tu proyecto en [Supabase Dashboard](https://supabase.com/dashboard)
 2. Ve a **Authentication** > **Providers**
 3. Habilita **Email** provider
 4. Configura las URLs de redirección en **URL Configuration**:
    - Site URL: `http://localhost:3000`
    - Redirect URLs: `http://localhost:3000/auth/callback`
+
+#### OAuth Providers (Opcional)
+
+**Google OAuth:**
+1. Ve a [Google Cloud Console](https://console.cloud.google.com/)
+2. Crea un nuevo proyecto o selecciona uno existente
+3. Habilita Google+ API
+4. Ve a **Credentials** > **Create Credentials** > **OAuth 2.0 Client ID**
+5. Configura las URLs de redirección:
+   - Authorized redirect URIs: `https://[tu-proyecto].supabase.co/auth/v1/callback`
+6. Copia el Client ID y Client Secret
+7. En Supabase Dashboard > **Authentication** > **Providers** > **Google**:
+   - Habilita Google provider
+   - Pega Client ID y Client Secret
+   - Guarda los cambios
+
+**Apple OAuth:**
+1. Ve a [Apple Developer](https://developer.apple.com/)
+2. Ve a **Certificates, Identifiers & Profiles** > **Identifiers**
+3. Crea un nuevo Service ID
+4. Habilita "Sign in with Apple"
+5. Configura las URLs de redirección:
+   - Return URLs: `https://[tu-proyecto].supabase.co/auth/v1/callback`
+6. Crea una Key para Sign in with Apple
+7. En Supabase Dashboard > **Authentication** > **Providers** > **Apple**:
+   - Habilita Apple provider
+   - Configura Service ID, Team ID y Key ID
+   - Sube el archivo .p8 key
+   - Guarda los cambios
 
 ## Desarrollo
 
@@ -87,9 +117,13 @@ La aplicación estará disponible en [http://localhost:3000](http://localhost:30
   /app
     /(auth)
       /login              # Página de login
+      /signup             # Página de registro
     /(dashboard)
       /dashboard          # Dashboard protegido
-    /actions              # Server Actions
+    /actions
+      /auth.ts            # Server Actions de autenticación
+    /auth
+      /callback           # OAuth callback
     /page.tsx             # Home (redirige a /login o /dashboard)
   /components
     /ui                   # Componentes base (Button, Input, Card, Label)
@@ -118,10 +152,14 @@ La aplicación estará disponible en [http://localhost:3000](http://localhost:30
 
 ### ✅ Autenticación
 - Login con email/password
+- Registro (signup) con validación
+- OAuth con Google (Sign in with Google)
+- OAuth con Apple (Sign in with Apple)
 - Logout
 - Protección de rutas con middleware
 - Server Actions para mutaciones
 - Redirección automática según estado de autenticación
+- Callback route para OAuth providers
 
 ### ✅ Internacionalización
 - Soporte multiidioma (español/inglés)
