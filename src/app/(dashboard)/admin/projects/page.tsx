@@ -9,8 +9,18 @@ import { ProjectModal } from '@/components/features/projects/ProjectModal';
 import { TaskModal } from '@/components/features/projects/TaskModal';
 import { Project, Task, ProjectStatus } from '@prisma/client';
 
+interface Assignment {
+  id: string;
+  user: {
+    id: string;
+    email: string;
+    name: string | null;
+  };
+}
+
 interface ProjectWithTasks extends Project {
   tasks: Task[];
+  assignments: Assignment[];
 }
 
 export default function AdminProjectsPage() {

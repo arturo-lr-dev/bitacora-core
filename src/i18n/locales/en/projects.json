@@ -32,5 +32,13 @@
   "activeTasks": "Active Tasks",
   "completedTasks": "Completed Tasks",
   "totalTasks": "Total Tasks",
-  "clientInformation": "Client Information"
+  "clientInformation": "Client Information",
+  "workers": "Assigned Workers",
+  "assignWorker": "Assign",
+  "assignWorkers": "Assign Workers (optional)",
+  "selectWorker": "Select worker",
+  "searchWorkers": "Search workers...",
+  "noWorkersFound": "No workers found",
+  "workersSelected": "selected",
+  "remove": "Remove"
 }

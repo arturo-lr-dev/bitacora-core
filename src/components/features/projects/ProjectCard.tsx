@@ -7,8 +7,18 @@ import { Button } from '@/components/ui/Button';
 import { Project, Task } from '@prisma/client';
 import { deleteProject } from '@/app/actions/projects';
 
+interface Assignment {
+  id: string;
+  user: {
+    id: string;
+    email: string;
+    name: string | null;
+  };
+}
+
 interface ProjectWithTasks extends Project {
   tasks: Task[];
+  assignments: Assignment[];
 }
 
 interface ProjectCardProps {
@@ -91,6 +101,15 @@ export function ProjectCard({ project, onEdit, onAddTask }: ProjectCardProps) {
           <div className="text-sm">
             <span className="text-muted-foreground">{t('hourlyRate')}: </span>
             <span className="font-medium">€{project.hourlyRate}/h</span>
+          </div>
+        )}
+
+        {project.assignments.length > 0 && (
+          <div className="text-sm">
+            <span className="text-muted-foreground">{t('workers')}: </span>
+            <span className="font-medium">
+              {project.assignments.map(a => a.user.name || a.user.email).join(', ')}
+            </span>
           </div>
         )}
 

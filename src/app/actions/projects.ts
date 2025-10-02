@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { prisma } from '@/lib/prisma/client';
 import type { ActionResponse } from '@/lib/utils/actionResponse';
-import { ProjectStatus } from '@prisma/client';
+import { ProjectStatus, Role } from '@prisma/client';
 
 export async function createProject(formData: FormData): Promise<ActionResponse<{ id: string }>> {
   const name = formData.get('name') as string;
@@ -119,5 +119,63 @@ export async function toggleTaskStatus(taskId: string): Promise<ActionResponse<v
   });
 
   revalidatePath('/admin/projects');
+  return { success: true, data: undefined };
+}
+
+export async function getWorkers() {
+  const workers = await prisma.user.findMany({
+    where: {
+      role: Role.WORKER,
+      status: 'ACTIVE',
+    },
+    select: {
+      id: true,
+      email: true,
+      name: true,
+    },
+    orderBy: {
+      name: 'asc',
+    },
+  });
+
+  return workers;
+}
+
+export async function assignWorkerToProject(
+  projectId: string,
+  workerId: string
+): Promise<ActionResponse<void>> {
+  try {
+    await prisma.projectAssignment.create({
+      data: {
+        projectId,
+        userId: workerId,
+      },
+    });
+
+    revalidatePath('/admin/projects');
+    revalidatePath(`/admin/projects/${projectId}`);
+    return { success: true, data: undefined };
+  } catch (error: any) {
+    if (error.code === 'P2002') {
+      return { success: false, error: 'El worker ya está asignado a este proyecto' };
+    }
+    return { success: false, error: 'Error al asignar worker' };
+  }
+}
+
+export async function removeWorkerFromProject(
+  projectId: string,
+  workerId: string
+): Promise<ActionResponse<void>> {
+  await prisma.projectAssignment.deleteMany({
+    where: {
+      projectId,
+      userId: workerId,
+    },
+  });
+
+  revalidatePath('/admin/projects');
+  revalidatePath(`/admin/projects/${projectId}`);
   return { success: true, data: undefined };
 }

@@ -32,5 +32,13 @@
   "activeTasks": "Tareas Activas",
   "completedTasks": "Tareas Completadas",
   "totalTasks": "Total de Tareas",
-  "clientInformation": "Información del Cliente"
+  "clientInformation": "Información del Cliente",
+  "workers": "Workers Asignados",
+  "assignWorker": "Asignar",
+  "assignWorkers": "Asignar Workers (opcional)",
+  "selectWorker": "Seleccionar worker",
+  "searchWorkers": "Buscar workers...",
+  "noWorkersFound": "No se encontraron workers",
+  "workersSelected": "seleccionados",
+  "remove": "Eliminar"
 }

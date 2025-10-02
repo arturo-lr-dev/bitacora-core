@@ -17,6 +17,17 @@ export async function GET() {
         tasks: {
           orderBy: { createdAt: 'desc' },
         },
+        assignments: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                email: true,
+                name: true,
+              }
+            }
+          }
+        }
       },
       orderBy: { createdAt: 'desc' },
     });

@@ -7,6 +7,8 @@ import { DashboardHeader } from '@/components/features/dashboard/DashboardHeader
 import { Button } from '@/components/ui/Button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { ProjectDetailClient } from '@/components/features/projects/ProjectDetailClient';
+import { ProjectDetailHeader } from '@/components/features/projects/ProjectDetailHeader';
+import { WorkerAssignments } from '@/components/features/projects/WorkerAssignments';
 import { getServerLocale } from '@/lib/i18n/getServerLocale';
 import { initServerI18n } from '@/i18n/server';
 import Link from 'next/link';
@@ -35,6 +37,17 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
           { isActive: 'desc' },
           { createdAt: 'desc' }
         ]
+      },
+      assignments: {
+        include: {
+          user: {
+            select: {
+              id: true,
+              email: true,
+              name: true,
+            }
+          }
+        }
       }
     }
   });
@@ -64,22 +77,12 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
             </Button>
           </Link>
 
-          <div className="flex items-start justify-between mb-4">
-            <div>
-              <h1 className="text-3xl font-bold mb-2">{project.name}</h1>
-              <span
-                className={`inline-block px-3 py-1 text-sm font-medium rounded-full ${
-                  statusColors[project.status]
-                }`}
-              >
-                {t(project.status.toLowerCase())}
-              </span>
-            </div>
-          </div>
-
-          {project.description && (
-            <p className="text-muted-foreground mt-4">{project.description}</p>
-          )}
+          <ProjectDetailHeader
+            project={project}
+            editLabel={t('editProject')}
+            statusColors={statusColors}
+            statusLabel={t(project.status.toLowerCase())}
+          />
         </div>
 
         <div className="grid gap-6 md:grid-cols-3 mb-6">
@@ -111,13 +114,13 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
           </Card>
         </div>
 
-        {project.clientName && (
-          <Card className="mb-6">
-            <CardHeader>
-              <CardTitle>{t('clientInformation')}</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              <div className="grid md:grid-cols-2 gap-4">
+        <div className="grid gap-6 md:grid-cols-2 mb-6">
+          {project.clientName && (
+            <Card>
+              <CardHeader>
+                <CardTitle>{t('clientInformation')}</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2">
                 <div>
                   <span className="text-sm text-muted-foreground">{t('clientName')}: </span>
                   <span className="font-medium">{project.clientName}</span>
@@ -134,10 +137,31 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
                     <span className="font-medium">€{project.hourlyRate}/h</span>
                   </div>
                 )}
-              </div>
+              </CardContent>
+            </Card>
+          )}
+
+          <Card>
+            <CardHeader>
+              <CardTitle>{t('workers')}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <WorkerAssignments
+                projectId={project.id}
+                assignments={project.assignments}
+                labels={{
+                  workers: t('workers'),
+                  assignWorker: t('assignWorker'),
+                  selectWorker: t('selectWorker'),
+                  searchWorkers: t('searchWorkers'),
+                  noWorkersFound: t('noWorkersFound'),
+                  workersSelected: t('workersSelected'),
+                  remove: t('remove'),
+                }}
+              />
             </CardContent>
           </Card>
-        )}
+        </div>
 
         <Card>
           <CardHeader>
