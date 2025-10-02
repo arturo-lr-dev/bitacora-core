@@ -34,14 +34,19 @@ export default function AdminProjectsPage() {
   const [selectedProject, setSelectedProject] = useState<ProjectWithTasks | undefined>();
   const [taskProjectId, setTaskProjectId] = useState<string>('');
   const [taskProjectName, setTaskProjectName] = useState<string>('');
+  const [isLoading, setIsLoading] = useState(true);
 
   // Cargar proyectos
   useEffect(() => {
     async function fetchProjects() {
-      const res = await fetch('/api/projects');
-      if (res.ok) {
-        const data = await res.json();
-        setProjects(data);
+      try {
+        const res = await fetch('/api/projects');
+        if (res.ok) {
+          const data = await res.json();
+          setProjects(data);
+        }
+      } finally {
+        setIsLoading(false);
       }
     }
     fetchProjects();
@@ -138,7 +143,26 @@ export default function AdminProjectsPage() {
       </div>
 
       <div className="container mx-auto px-4 py-8">
-        {filteredProjects.length === 0 ? (
+        {isLoading ? (
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {[1, 2, 3].map(i => (
+              <div key={i} className="bg-card rounded-lg border border-border p-6 overflow-hidden relative">
+                <div className="h-6 bg-muted rounded w-3/4 mb-4" />
+                <div className="h-4 bg-muted rounded w-1/2 mb-6" />
+                <div className="space-y-2">
+                  <div className="h-4 bg-muted rounded w-full" />
+                  <div className="h-4 bg-muted rounded w-5/6" />
+                </div>
+                <div className="mt-6 flex gap-2">
+                  <div className="h-9 bg-muted rounded flex-1" />
+                  <div className="h-9 bg-muted rounded flex-1" />
+                </div>
+                {/* Shimmer effect */}
+                <div className="absolute inset-0 -translate-x-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-black/20 to-transparent" />
+              </div>
+            ))}
+          </div>
+        ) : filteredProjects.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center">
             <div className="text-6xl mb-4">📋</div>
             <h3 className="text-xl font-semibold mb-2">{t('noProjects')}</h3>

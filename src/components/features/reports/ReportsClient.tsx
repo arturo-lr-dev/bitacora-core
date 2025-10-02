@@ -109,8 +109,35 @@ export function ReportsClient({ projects, users, tasks, labels }: ReportsClientP
       />
 
       {isLoading ? (
-        <div className="text-center py-12 text-muted-foreground">
-          <p>{labels.loading}</p>
+        <div className="space-y-6">
+          {/* Summary Skeleton */}
+          <div className="grid gap-4 md:grid-cols-2">
+            {[1, 2].map(i => (
+              <div key={i} className="bg-card rounded-lg border border-border p-6 overflow-hidden relative">
+                <div className="h-4 bg-muted rounded w-1/3 mb-3" />
+                <div className="h-10 bg-muted rounded w-1/2" />
+                <div className="absolute inset-0 -translate-x-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-black/20 to-transparent" />
+              </div>
+            ))}
+          </div>
+
+          {/* Table Skeleton */}
+          <div className="bg-card rounded-lg border border-border overflow-hidden relative">
+            <div className="p-6 border-b">
+              <div className="h-6 bg-muted rounded w-1/4" />
+            </div>
+            <div className="p-6 space-y-3">
+              {[1, 2, 3, 4, 5].map(i => (
+                <div key={i} className="flex gap-4">
+                  <div className="h-4 bg-muted rounded flex-1" />
+                  <div className="h-4 bg-muted rounded flex-1" />
+                  <div className="h-4 bg-muted rounded flex-1" />
+                  <div className="h-4 bg-muted rounded flex-1" />
+                </div>
+              ))}
+            </div>
+            <div className="absolute inset-0 -translate-x-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-black/20 to-transparent" />
+          </div>
         </div>
       ) : (
         <>
