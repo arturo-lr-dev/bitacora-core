@@ -1,0 +1,10 @@
+{
+  "required": "This field is required",
+  "email": {
+    "invalid": "The email is not valid"
+  },
+  "password": {
+    "minLength": "Password must be at least 6 characters",
+    "noMatch": "Passwords do not match"
+  }
+}
