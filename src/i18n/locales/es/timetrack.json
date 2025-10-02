@@ -22,5 +22,9 @@
   "startTime": "Inicio",
   "endTime": "Fin",
   "project": "Proyecto",
-  "task": "Tarea"
+  "task": "Tarea",
+  "adjustTime": "Ajustar Hora",
+  "adjustStartTime": "Ajustar Hora de Inicio",
+  "save": "Guardar",
+  "cancel": "Cancelar"
 }

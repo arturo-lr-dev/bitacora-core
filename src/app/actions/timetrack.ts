@@ -156,3 +156,41 @@ export async function getTimeEntries(filter: 'today' | 'week' | 'month' = 'today
 
   return entries;
 }
+
+export async function updateStartTime(
+  entryId: string,
+  newStartTime: Date
+): Promise<ActionResponse<void>> {
+  const session = await requireAuth();
+
+  const entry = await prisma.timeEntry.findUnique({
+    where: { id: entryId },
+  });
+
+  if (!entry) {
+    return { success: false, error: 'Registro no encontrado' };
+  }
+
+  if (entry.userId !== session.user.id) {
+    return { success: false, error: 'No autorizado' };
+  }
+
+  if (entry.status !== 'IN_PROGRESS') {
+    return { success: false, error: 'Solo se puede ajustar el tiempo de registros activos' };
+  }
+
+  // Validar que la nueva hora no sea futura
+  if (newStartTime.getTime() > new Date().getTime()) {
+    return { success: false, error: 'La hora de inicio no puede ser futura' };
+  }
+
+  await prisma.timeEntry.update({
+    where: { id: entryId },
+    data: {
+      startTime: newStartTime,
+    },
+  });
+
+  revalidatePath('/worker');
+  return { success: true, data: undefined };
+}

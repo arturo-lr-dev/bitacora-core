@@ -50,6 +50,10 @@ export default async function WorkerDashboard() {
                   duration: t('duration'),
                   notes: t('notes'),
                   stopWork: t('stopWork'),
+                  adjustTime: t('adjustTime'),
+                  adjustStartTime: t('adjustStartTime'),
+                  save: t('save'),
+                  cancel: t('cancel'),
                 }}
               />
             ) : (

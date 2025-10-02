@@ -4,7 +4,9 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/Button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
-import { stopTimeEntry } from '@/app/actions/timetrack';
+import { Input } from '@/components/ui/Input';
+import { Label } from '@/components/ui/Label';
+import { stopTimeEntry, updateStartTime } from '@/app/actions/timetrack';
 
 interface ActiveTimerProps {
   entryId: string;
@@ -18,6 +20,10 @@ interface ActiveTimerProps {
     duration: string;
     notes: string;
     stopWork: string;
+    adjustTime: string;
+    adjustStartTime: string;
+    save: string;
+    cancel: string;
   };
 }
 
@@ -32,6 +38,8 @@ export function ActiveTimer({
   const router = useRouter();
   const [currentTime, setCurrentTime] = useState(new Date());
   const [isLoading, setIsLoading] = useState(false);
+  const [showAdjustTime, setShowAdjustTime] = useState(false);
+  const [adjustedTime, setAdjustedTime] = useState('');
 
   useEffect(() => {
     // Actualizar el tiempo actual cada segundo
@@ -42,10 +50,40 @@ export function ActiveTimer({
     return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    // Inicializar el input con la hora de inicio actual
+    const start = new Date(startTime);
+    const hours = String(start.getHours()).padStart(2, '0');
+    const minutes = String(start.getMinutes()).padStart(2, '0');
+    setAdjustedTime(`${hours}:${minutes}`);
+  }, [startTime]);
+
   async function handleStop() {
     setIsLoading(true);
     await stopTimeEntry(entryId);
     router.refresh();
+  }
+
+  async function handleSaveAdjustedTime() {
+    setIsLoading(true);
+
+    // Parsear la hora ingresada
+    const [hours, minutes] = adjustedTime.split(':').map(Number);
+
+    // Crear nueva fecha con la hora ajustada pero la fecha de hoy
+    const newStartTime = new Date();
+    newStartTime.setHours(hours, minutes, 0, 0);
+
+    const result = await updateStartTime(entryId, newStartTime);
+
+    if (result.success) {
+      setShowAdjustTime(false);
+      router.refresh();
+    } else {
+      alert(result.error);
+    }
+
+    setIsLoading(false);
   }
 
   // Calcular el tiempo transcurrido basándose en la diferencia real entre fechas
@@ -85,14 +123,64 @@ export function ActiveTimer({
           </p>
         </div>
 
-        <Button
-          variant="primary"
-          onClick={handleStop}
-          disabled={isLoading}
-          className="w-full"
-        >
-          ⏹️ {labels.stopWork}
-        </Button>
+        {!showAdjustTime ? (
+          <div className="space-y-2">
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() => setShowAdjustTime(true)}
+              disabled={isLoading}
+              className="w-full"
+            >
+              🕐 {labels.adjustTime}
+            </Button>
+            <Button
+              variant="primary"
+              onClick={handleStop}
+              disabled={isLoading}
+              className="w-full"
+            >
+              ⏹️ {labels.stopWork}
+            </Button>
+          </div>
+        ) : (
+          <div className="border-t pt-4 space-y-3">
+            <div>
+              <Label htmlFor="adjustTime">{labels.adjustStartTime}</Label>
+              <Input
+                id="adjustTime"
+                type="time"
+                value={adjustedTime}
+                onChange={(e) => setAdjustedTime(e.target.value)}
+                disabled={isLoading}
+                className="mt-1"
+              />
+              <p className="text-xs text-muted-foreground mt-1">
+                Hora actual de inicio: {new Date(startTime).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}
+              </p>
+            </div>
+            <div className="flex gap-2">
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => setShowAdjustTime(false)}
+                disabled={isLoading}
+                className="flex-1"
+              >
+                {labels.cancel}
+              </Button>
+              <Button
+                variant="primary"
+                size="sm"
+                onClick={handleSaveAdjustedTime}
+                disabled={isLoading}
+                className="flex-1"
+              >
+                {labels.save}
+              </Button>
+            </div>
+          </div>
+        )}
       </CardContent>
     </Card>
   );
