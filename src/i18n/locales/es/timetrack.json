@@ -26,5 +26,13 @@
   "adjustTime": "Ajustar Hora",
   "adjustStartTime": "Ajustar Hora de Inicio",
   "save": "Guardar",
-  "cancel": "Cancelar"
+  "cancel": "Cancelar",
+  "uploadFiles": "Subir Archivos",
+  "uploadFilesTitle": "Subir Archivos a Tarea",
+  "selectProject": "Seleccionar Proyecto",
+  "selectFiles": "Seleccionar archivos",
+  "upload": "Subir",
+  "uploadSuccess": "Archivos subidos exitosamente",
+  "uploadError": "Error al subir archivos",
+  "maxFileSize": "Tamaño máximo: 10MB por archivo"
 }

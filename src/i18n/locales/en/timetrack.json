@@ -26,5 +26,13 @@
   "adjustTime": "Adjust Time",
   "adjustStartTime": "Adjust Start Time",
   "save": "Save",
-  "cancel": "Cancel"
+  "cancel": "Cancel",
+  "uploadFiles": "Upload Files",
+  "uploadFilesTitle": "Upload Files to Task",
+  "selectProject": "Select Project",
+  "selectFiles": "Select files",
+  "upload": "Upload",
+  "uploadSuccess": "Files uploaded successfully",
+  "uploadError": "Error uploading files",
+  "maxFileSize": "Max file size: 10MB per file"
 }

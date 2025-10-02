@@ -6,6 +6,7 @@ import { getActiveTimeEntry, getWorkerProjects, getTimeEntries } from '@/app/act
 import { ActiveTimer } from '@/components/features/timetrack/ActiveTimer';
 import { StartTimeEntry } from '@/components/features/timetrack/StartTimeEntry';
 import { TimeEntryHistory } from '@/components/features/timetrack/TimeEntryHistory';
+import { TaskFileUpload } from '@/components/features/worker/TaskFileUpload';
 import { getServerLocale } from '@/lib/i18n/getServerLocale';
 import { initServerI18n } from '@/i18n/server';
 
@@ -35,7 +36,7 @@ export default async function WorkerDashboard() {
           <p className="text-muted-foreground">{user.email}</p>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid gap-6 lg:grid-cols-3 md:grid-cols-2">
           <div className="space-y-6">
             {activeEntry ? (
               <ActiveTimer
@@ -67,9 +68,23 @@ export default async function WorkerDashboard() {
                 }}
               />
             )}
+
+            <TaskFileUpload
+              projects={projects}
+              labels={{
+                title: t('uploadFilesTitle'),
+                selectProject: t('selectProject'),
+                selectTask: t('selectTask'),
+                selectFiles: t('selectFiles'),
+                upload: t('upload'),
+                uploadSuccess: t('uploadSuccess'),
+                uploadError: t('uploadError'),
+                maxFileSize: t('maxFileSize'),
+              }}
+            />
           </div>
 
-          <div>
+          <div className="lg:col-span-2">
             <TimeEntryHistory
               entries={todayEntries}
               labels={{
