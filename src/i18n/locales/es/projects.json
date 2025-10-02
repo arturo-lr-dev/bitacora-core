@@ -40,5 +40,8 @@
   "searchWorkers": "Buscar workers...",
   "noWorkersFound": "No se encontraron workers",
   "workersSelected": "seleccionados",
-  "remove": "Eliminar"
+  "remove": "Eliminar",
+  "detail": "Detalle",
+  "addTaskShort": "Tarea",
+  "more": "más..."
 }

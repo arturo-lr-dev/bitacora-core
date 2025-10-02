@@ -40,5 +40,8 @@
   "searchWorkers": "Search workers...",
   "noWorkersFound": "No workers found",
   "workersSelected": "selected",
-  "remove": "Remove"
+  "remove": "Remove",
+  "detail": "Detail",
+  "addTaskShort": "Task",
+  "more": "more..."
 }

@@ -125,7 +125,7 @@ export function ProjectCard({ project, onEdit, onAddTask }: ProjectCardProps) {
                 size="sm"
                 className="w-full h-8 text-sm"
               >
-                📋 Ver Detalle
+                📋 {t('detail')}
               </Button>
             </a>
             <Button
@@ -134,7 +134,7 @@ export function ProjectCard({ project, onEdit, onAddTask }: ProjectCardProps) {
               onClick={() => onAddTask(project.id)}
               className="h-8 text-sm flex-1"
             >
-              + Tarea
+              + {t('addTaskShort')}
             </Button>
           </div>
         </div>
@@ -153,7 +153,7 @@ export function ProjectCard({ project, onEdit, onAddTask }: ProjectCardProps) {
             ))}
             {project.tasks.length > 3 && (
               <p className="text-xs text-muted-foreground pl-2">
-                +{project.tasks.length - 3} más...
+                +{project.tasks.length - 3} {t('more')}
               </p>
             )}
           </div>
