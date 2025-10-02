@@ -71,7 +71,7 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
       <DashboardHeader />
       <main className="container mx-auto p-4 md:p-8">
         <div className="mb-6">
-          <Link href="/admin/projects">
+          <Link href="/admin">
             <Button variant="ghost" size="sm" className="mb-4">
               ← {t('backToProjects')}
             </Button>
