@@ -4,6 +4,8 @@ import { revalidatePath } from 'next/cache';
 import { prisma } from '@/lib/prisma/client';
 import type { ActionResponse } from '@/lib/utils/actionResponse';
 import { ProjectStatus, Role } from '@prisma/client';
+import { requireAuth } from '@/lib/auth/session';
+import { uploadTaskAttachment } from './attachments';
 
 export async function createProject(formData: FormData): Promise<ActionResponse<{ id: string }>> {
   const name = formData.get('name') as string;
@@ -90,6 +92,16 @@ export async function createTask(
       isActive: true,
     },
   });
+
+  // Upload files if any
+  const files = formData.getAll('files') as File[];
+  for (const file of files) {
+    if (file && file.size > 0) {
+      const fileFormData = new FormData();
+      fileFormData.append('file', file);
+      await uploadTaskAttachment(task.id, fileFormData);
+    }
+  }
 
   revalidatePath('/admin/projects');
   return { success: true, data: { id: task.id } };

@@ -2,15 +2,21 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Task } from '@prisma/client';
+import { Task, TaskAttachment, User } from '@prisma/client';
 import { Button } from '@/components/ui/Button';
 import { TaskList } from './TaskList';
 import { TaskModal } from './TaskModal';
 
+type TaskWithAttachments = Task & {
+  attachments: (TaskAttachment & {
+    uploadedBy: Pick<User, 'id' | 'name' | 'email'>;
+  })[];
+};
+
 interface ProjectDetailClientProps {
   projectId: string;
   projectName: string;
-  tasks: Task[];
+  tasks: TaskWithAttachments[];
   addTaskLabel: string;
 }
 

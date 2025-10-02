@@ -33,6 +33,19 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
     where: { id },
     include: {
       tasks: {
+        include: {
+          attachments: {
+            include: {
+              uploadedBy: {
+                select: {
+                  id: true,
+                  name: true,
+                  email: true,
+                }
+              }
+            }
+          }
+        },
         orderBy: [
           { isActive: 'desc' },
           { createdAt: 'desc' }

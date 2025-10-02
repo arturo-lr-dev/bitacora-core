@@ -46,6 +46,7 @@ model User {
   // Relaciones
   timeEntries   TimeEntry[]
   projectAssignments ProjectAssignment[]
+  taskAttachments TaskAttachment[]
 
   @@index([email])
   @@index([role])
@@ -101,9 +102,33 @@ model Task {
 
   // Relaciones
   timeEntries TimeEntry[]
+  attachments TaskAttachment[]
 
   @@index([projectId])
   @@index([isActive])
+}
+
+model TaskAttachment {
+  id          String   @id @default(cuid())
+
+  // Relación con tarea
+  taskId      String
+  task        Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  // Información del archivo
+  fileName    String
+  fileSize    Int      // Tamaño en bytes
+  mimeType    String
+  storagePath String   // Ruta en Supabase Storage
+
+  // Usuario que subió el archivo
+  uploadedById String
+  uploadedBy   User    @relation(fields: [uploadedById], references: [id])
+
+  createdAt   DateTime @default(now())
+
+  @@index([taskId])
+  @@map("task_attachments")
 }
 
 // ============================================

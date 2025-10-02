@@ -43,5 +43,20 @@
   "remove": "Remove",
   "detail": "Detail",
   "addTaskShort": "Task",
-  "more": "more..."
+  "more": "more...",
+  "attachFiles": "Attach files (optional)",
+  "selectFiles": "Select files",
+  "attachments": "Attachments",
+  "download": "Download",
+  "deleteFile": "Delete file",
+  "maxFileSize": "Max file size: 10MB per file",
+  "errors": {
+    "noFileProvided": "No file provided",
+    "fileTooLarge": "File exceeds maximum size of 10MB",
+    "taskNotFound": "Task not found",
+    "uploadError": "Error uploading file",
+    "processError": "Error processing file",
+    "fileNotFound": "File not found",
+    "deleteError": "Error deleting file"
+  }
 }

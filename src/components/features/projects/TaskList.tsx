@@ -3,17 +3,25 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/Button';
-import { Task } from '@prisma/client';
+import { Task, TaskAttachment, User } from '@prisma/client';
 import { deleteTask, toggleTaskStatus } from '@/app/actions/projects';
+import { deleteTaskAttachment, getAttachmentUrl } from '@/app/actions/attachments';
+
+type TaskWithAttachments = Task & {
+  attachments: (TaskAttachment & {
+    uploadedBy: Pick<User, 'id' | 'name' | 'email'>;
+  })[];
+};
 
 interface TaskListProps {
-  tasks: Task[];
+  tasks: TaskWithAttachments[];
   onRefresh: () => void;
 }
 
 export function TaskList({ tasks, onRefresh }: TaskListProps) {
   const { t } = useTranslation('projects');
   const [loadingTaskId, setLoadingTaskId] = useState<string | null>(null);
+  const [loadingAttachmentId, setLoadingAttachmentId] = useState<string | null>(null);
 
   async function handleToggle(taskId: string) {
     setLoadingTaskId(taskId);
@@ -28,6 +36,22 @@ export function TaskList({ tasks, onRefresh }: TaskListProps) {
     setLoadingTaskId(taskId);
     await deleteTask(taskId);
     setLoadingTaskId(null);
+    onRefresh();
+  }
+
+  async function handleDownload(attachment: TaskAttachment) {
+    const url = await getAttachmentUrl(attachment.storagePath);
+    if (url) {
+      window.open(url, '_blank');
+    }
+  }
+
+  async function handleDeleteAttachment(attachmentId: string, fileName: string) {
+    if (!confirm(`${t('deleteFile')}\n\n"${fileName}"`)) return;
+
+    setLoadingAttachmentId(attachmentId);
+    await deleteTaskAttachment(attachmentId);
+    setLoadingAttachmentId(null);
     onRefresh();
   }
 
@@ -67,6 +91,38 @@ export function TaskList({ tasks, onRefresh }: TaskListProps) {
               <p className="text-sm text-muted-foreground mt-1">
                 {task.description}
               </p>
+            )}
+
+            {task.attachments.length > 0 && (
+              <div className="mt-3 space-y-1">
+                <p className="text-xs font-medium text-muted-foreground">
+                  {t('attachments')} ({task.attachments.length})
+                </p>
+                {task.attachments.map(attachment => (
+                  <div
+                    key={attachment.id}
+                    className="flex items-center gap-2 text-xs bg-muted p-2 rounded"
+                  >
+                    <span className="flex-1 truncate">{attachment.fileName}</span>
+                    <span className="text-muted-foreground">
+                      {(attachment.fileSize / 1024).toFixed(1)} KB
+                    </span>
+                    <button
+                      onClick={() => handleDownload(attachment)}
+                      className="text-primary hover:underline"
+                    >
+                      {t('download')}
+                    </button>
+                    <button
+                      onClick={() => handleDeleteAttachment(attachment.id, attachment.fileName)}
+                      disabled={loadingAttachmentId === attachment.id}
+                      className="text-destructive hover:underline disabled:opacity-50"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                ))}
+              </div>
             )}
           </div>
 
