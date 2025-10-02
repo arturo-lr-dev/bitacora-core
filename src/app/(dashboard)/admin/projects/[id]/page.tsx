@@ -81,7 +81,7 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
 
   return (
     <div className="min-h-screen bg-muted/40">
-      <DashboardHeader />
+      <DashboardHeader role="ADMIN" />
       <main className="container mx-auto p-4 md:p-8">
         <div className="mb-6">
           <Link href="/admin">

@@ -1,5 +1,5 @@
 {
-  "title": "Panel de Control",
+  "title": "Dashboard",
   "welcome": "Bienvenido",
   "logout": "Cerrar sesión",
   "adminPanel": "Panel de Administración",
@@ -10,5 +10,6 @@
   "totalHours": "Horas Totales",
   "thisMonth": "Este mes",
   "clients": "Clientes",
-  "manageProjects": "Gestionar Proyectos"
+  "manageProjects": "Gestionar Proyectos",
+  "reports": "Reportes"
 }
