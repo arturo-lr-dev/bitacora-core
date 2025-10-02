@@ -57,15 +57,26 @@ export async function middleware(request: NextRequest) {
 
   const isAuthPage = request.nextUrl.pathname.startsWith('/login') ||
                      request.nextUrl.pathname.startsWith('/signup');
-  const isDashboard = request.nextUrl.pathname.startsWith('/dashboard');
+  const isProtectedRoute = request.nextUrl.pathname.startsWith('/worker') ||
+                           request.nextUrl.pathname.startsWith('/admin') ||
+                           request.nextUrl.pathname.startsWith('/client') ||
+                           request.nextUrl.pathname.startsWith('/dashboard');
 
-  // Redirect authenticated users from auth pages to dashboard
+  // Redirect authenticated users from auth pages to their dashboard
   if (session && isAuthPage) {
-    return NextResponse.redirect(new URL('/dashboard', request.url));
+    // Get user role from Prisma to redirect to correct dashboard
+    const { getUserWithRole } = await import('@/lib/user/getOrCreateUser');
+    const user = await getUserWithRole(session.user.id);
+
+    if (user) {
+      const dashboardPath = user.role === 'ADMIN' ? '/admin' :
+                            user.role === 'CLIENT' ? '/client' : '/worker';
+      return NextResponse.redirect(new URL(dashboardPath, request.url));
+    }
   }
 
-  // Redirect unauthenticated users from dashboard to login
-  if (!session && isDashboard) {
+  // Redirect unauthenticated users from protected routes to login
+  if (!session && isProtectedRoute) {
     return NextResponse.redirect(new URL('/login', request.url));
   }
 

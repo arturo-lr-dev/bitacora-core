@@ -5,8 +5,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql" // Puedes cambiar a mysql, sqlite, etc.
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 // ============================================
@@ -25,16 +26,22 @@ enum UserStatus {
   SUSPENDED
 }
 
-model User {
-  id            String      @id @default(cuid())
-  email         String      @unique
-  password      String      // Hash del password
-  name          String
-  role          Role        @default(WORKER)
-  status        UserStatus  @default(ACTIVE)
+enum AuthProvider {
+  EMAIL      // Email/Password
+  GOOGLE     // Google OAuth
+  APPLE      // Apple OAuth
+}
 
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
+model User {
+  id            String       @id // UUID de Supabase
+  email         String       @unique
+  name          String?
+  role          Role         @default(WORKER)
+  status        UserStatus   @default(ACTIVE)
+  authProvider  AuthProvider @default(EMAIL) // Método de autenticación usado
+
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
 
   // Relaciones
   timeEntries   TimeEntry[]
@@ -42,6 +49,7 @@ model User {
 
   @@index([email])
   @@index([role])
+  @@map("users")
 }
 
 // ============================================
