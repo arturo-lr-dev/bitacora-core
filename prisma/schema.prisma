@@ -1,0 +1,165 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql" // Puedes cambiar a mysql, sqlite, etc.
+  url      = env("DATABASE_URL")
+}
+
+// ============================================
+// USUARIOS Y AUTENTICACIÓN
+// ============================================
+
+enum Role {
+  WORKER       // Trabajador
+  ADMIN        // Administrador
+  CLIENT       // Cliente (para futuro)
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+}
+
+model User {
+  id            String      @id @default(cuid())
+  email         String      @unique
+  password      String      // Hash del password
+  name          String
+  role          Role        @default(WORKER)
+  status        UserStatus  @default(ACTIVE)
+
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  // Relaciones
+  timeEntries   TimeEntry[]
+  projectAssignments ProjectAssignment[]
+
+  @@index([email])
+  @@index([role])
+}
+
+// ============================================
+// PROYECTOS Y TAREAS
+// ============================================
+
+enum ProjectStatus {
+  ACTIVE
+  COMPLETED
+  ARCHIVED
+  ON_HOLD
+}
+
+model Project {
+  id          String        @id @default(cuid())
+  name        String
+  description String?
+  status      ProjectStatus @default(ACTIVE)
+
+  // Para facturación futura
+  hourlyRate  Float?        // Tarifa por hora (opcional)
+  clientName  String?       // Nombre del cliente
+  clientEmail String?       // Email del cliente
+
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  // Relaciones
+  tasks       Task[]
+  timeEntries TimeEntry[]
+  assignments ProjectAssignment[]
+
+  @@index([status])
+  @@index([clientEmail])
+}
+
+model Task {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  isActive    Boolean  @default(true)
+
+  // Relación con proyecto
+  projectId   String
+  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relaciones
+  timeEntries TimeEntry[]
+
+  @@index([projectId])
+  @@index([isActive])
+}
+
+// ============================================
+// ASIGNACIONES
+// ============================================
+
+model ProjectAssignment {
+  id        String   @id @default(cuid())
+
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  assignedAt DateTime @default(now())
+
+  @@unique([userId, projectId]) // Un usuario no puede estar asignado dos veces al mismo proyecto
+  @@index([userId])
+  @@index([projectId])
+}
+
+// ============================================
+// REGISTROS DE TIEMPO
+// ============================================
+
+enum TimeEntryStatus {
+  IN_PROGRESS  // Entrada activa (sin salida)
+  COMPLETED    // Finalizada
+  CANCELLED    // Cancelada
+}
+
+model TimeEntry {
+  id          String          @id @default(cuid())
+
+  // Usuario que registra
+  userId      String
+  user        User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Proyecto y tarea
+  projectId   String
+  project     Project         @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  taskId      String
+  task        Task            @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  // Tiempos
+  startTime   DateTime        @default(now())
+  endTime     DateTime?
+
+  // Duración en minutos (calculada automáticamente)
+  duration    Int?            // Minutos trabajados
+
+  status      TimeEntryStatus @default(IN_PROGRESS)
+
+  // Notas opcionales
+  notes       String?
+
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  @@index([userId])
+  @@index([projectId])
+  @@index([taskId])
+  @@index([startTime])
+  @@index([status])
+}
