@@ -87,7 +87,9 @@ export function DashboardHeader({ role }: DashboardHeaderProps = {}) {
         </div>
 
         <div className="flex items-center gap-2 md:gap-4">
-          <LanguageSwitcher />
+          <div className="hidden md:block">
+            <LanguageSwitcher />
+          </div>
           <Button
             variant="ghost"
             size="sm"

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { LanguageSwitcher } from './LanguageSwitcher';
 
 interface MobileNavProps {
   role?: 'ADMIN' | 'WORKER';
@@ -94,6 +95,11 @@ export function MobileNav({ role, labels }: MobileNavProps) {
             </svg>
             {labels.reports}
           </Link>
+
+          {/* Language Switcher en móvil */}
+          <div className="pt-6 mt-6 border-t border-border">
+            <LanguageSwitcher />
+          </div>
         </nav>
       </div>
     </>

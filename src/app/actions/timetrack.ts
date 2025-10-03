@@ -99,6 +99,9 @@ export async function getWorkerProjects() {
   const assignments = await prisma.projectAssignment.findMany({
     where: {
       userId: session.user.id,
+      project: {
+        status: 'ACTIVE',
+      },
     },
     include: {
       project: {
