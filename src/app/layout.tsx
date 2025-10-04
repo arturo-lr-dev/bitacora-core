@@ -17,6 +17,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: 'Bitácora Core',
   description: 'Sistema de gestión',
+  viewport: 'width=device-width, initial-scale=1, maximum-scale=1',
 };
 
 export default async function RootLayout({
